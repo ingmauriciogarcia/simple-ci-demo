@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      # CodeBuild utiliza imágenes Docker con herramientas preinstaladas
+      - echo El entorno CodeBuild ya tiene PHP y Composer.
+
+  pre_build:
+    commands:
+      # Instalar las dependencias del proyecto (incluyendo PHPUnit)
+      - echo Ejecutando composer install...
+      - composer install --no-dev --prefer-dist
+
+  build:
+    commands:
+      # Ejecutar las pruebas de Integración Continua (CI)
+      - echo Iniciando las pruebas unitarias de PHP...
+      - vendor/bin/phpunit tests/BasicTest.php
+
+  post_build:
+    commands:
+      # Las pruebas pasaron, preparamos el artefacto para el Despliegue (CD)
+      - echo Pruebas CI exitosas. Creando artefacto de despliegue...
+
+artifacts:
+  files:
+    - '**/*' # Empaqueta todo el proyecto
